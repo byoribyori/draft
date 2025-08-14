@@ -75,16 +75,16 @@
     #list>div {
         width: calc(50vw - 2px);
         font-family: "Yuji Mai", serif;
-          font-style: normal;
+        font-style: normal;
         font-size: 8vw;
         text-align: center;
         border: 1px solid black;
     }
 
     #list span.kana {
-  font-family: "Kaisei Tokumin", serif;
-  font-weight: 700;
-}
+        font-family: "Kaisei Tokumin", serif;
+        font-weight: 700;
+    }
 
     .pitcher {
         background-color: #ff8484;
@@ -187,8 +187,9 @@
 
 <body>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@700&family=Yuji+Mai&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@700&family=Yuji+Mai&display=swap"
+        rel="stylesheet">
     <div class="button-controls-container">
         <table>
             <tr>
@@ -281,6 +282,8 @@
             <div class="pitcher highschool">濱岡 蒼太</div>
             <div class="pitcher university">稲川 竜汰</div>
             <div class="pitcher university">小中 稜太</div>
+            <div class="pitcher highschool">中山 優人</div>
+            <div class="pitcher university">久野 悠斗</div>
 
 
             <div class="catcher university">小島 大河</div>
@@ -306,6 +309,7 @@
             <div class="infielder university">池田 彪我</div>
             <div class="infielder highschool">半田 南十</div>
             <div class="infielder highschool">西川 篤夢</div>
+            <div class="infielder highschool">井上 遥翔</div>
 
             <div class="outfielder university">平川 蓮</div>
             <div class="outfielder university">山形 球道</div>
@@ -314,6 +318,8 @@
             <div class="outfielder university">秋山 俊</div>
             <div class="outfielder university">宮崎 海</div>
             <div class="outfielder highschool"><span class="kana">エミール</span></div>
+            <div class="outfielder university"><span class="kana">エドポロ</span></div>
+            <div class="outfielder university">花田 旭</div>
 
 
         </div>
@@ -343,52 +349,61 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-    //     // サーバー上のJSONファイルへのパス
-    // const filePath = 'https://byoribyori.github.io/draft/player_list.json';
+        const list = document.getElementById('list');
+        const players = list.getElementsByTagName('div');
+        for(let i in players){
+            players[i].id='player'+i;
+        }
+     
+        // list.innerHTML = '';
 
-    // // fetch APIを使ってJSONファイルを読み込む
-    // fetch(filePath)
-    //   .then(response => {
-    //     // レスポンスが正常か確認
-    //     if (!response.ok) {
-    //       throw new Error(`HTTPエラー! ステータス: ${response.status}`);
-    //     }
-    //     // レスポンスをJSONとしてパース
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     console.log("JSONファイルを正常に読み込みました。", data);
-    //   })
-    //   .catch(error => {
-    //     console.error("エラーが発生しました:", error);
-    //   });
+        let shimei;
+        const create_list = (data) => {
+            // const position = ['pitcher', 'catcher', 'infielder', 'outfielder'];
+            // const affiliation = ['highschool', 'university', 'society', 'independent'];
+            // for (let i = 0; i < data.length; i += 3) {
+            //     list.innerHTML += `<div id="player${i}" class="${position[data[i + 1]]} ${affiliation[data[i + 2]]}">${data[i]}</div>`;
+            // }
+
+            shimei = JSON.parse(localStorage.getItem('shimei'));//保存データ
+            if (shimei) {
+                if (confirm('保存されたデータを使いますか\n使わない場合データは削除されます')) {
+                    for (let i in shimei) {
+                        document.getElementById(`player${shimei[i]}`).remove();//指名されている選手は消す
+                    }
+                } else {
+                    localStorage.removeItem('shimei');//使わない場合データ削除
+                    shimei = [];
+                }
+            } else {
+                shimei = [];
+            }
+        }
+        create_list()
+
+        // const filePath = 'https://byoribyori.github.io/draft/players_2025.json';
+        // // fetch APIを使ってJSONファイルを読み込む
+        // fetch(filePath)
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+        //         }
+        //         return response.json();
+        //     })
+        //     .then(data => {
+        //         console.log("JSONファイルを正常に読み込みました。", data);
+        //         create_list(data);
+        //     })
+        //     .catch(error => {
+        //         console.error("エラーが発生しました:", error);
+        //     });
 
         const header = document.querySelector('.button-controls-container');
         const headerHeight = header.offsetHeight; // ヘッダーの実際の高さを取得
         document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
 
-        const list = document.getElementById('list');
-        const players = list.getElementsByTagName('div');
-        for (let i = 0; i < players.length; i++) {
-            players[i].id = `player${i}`;//idをつける
-        }
-
-        let shimei = JSON.parse(localStorage.getItem('shimei'));//保存データ
-        if (shimei) {
-            if (confirm('保存されたデータを使いますか\n使わない場合データは削除されます')) {
-                for (let i in shimei) {
-                    document.getElementById(`player${shimei[i]}`).remove();//指名されている選手は消す
-                }
-            } else {
-                localStorage.removeItem('shimei');//使わない場合データ削除
-                shimei = [];
-            }
-        } else {
-            shimei = [];
-        }
-
         list.addEventListener('click', (e) => {
-            if(e.target.id.indexOf('player')==-1)return;
+            if (e.target.id.indexOf('player') == -1) return;
             if (confirm(`${e.target.innerText}選手が\n指名されました`)) {
                 shimei.push(e.target.id.match(/\d+/)[0]);//idの数字部分
                 localStorage.setItem('shimei', JSON.stringify(shimei))
