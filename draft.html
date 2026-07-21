@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>2025ドラフト候補</title>
+    <title>ドラフト候補</title>
 </head>
 <style>
     html {
@@ -265,9 +265,18 @@
                 shimei = [];
             }
         }
-        //create_list()
 
-        const filePath = 'https://byoribyori.github.io/draft/players_2025.json';
+        function getYearParam() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('year');
+            const year = parseInt(raw, 10);
+            if (!raw || isNaN(year) || year < 2025 || year > 2026) {
+                return 2026;
+            }
+            return year;
+        }
+
+        const filePath = `https://byoribyori.github.io/draft/players_${getYearParam()}.json`;
         // fetch APIを使ってJSONファイルを読み込む
         fetch(filePath)
             .then(response => {
